@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_recent"
+        android:icon="@drawable/baseline_fiber_new_black_24dp"
+        android:title="@string/nav_recent" />
+    <item
+        android:id="@+id/nav_calender"
+        android:icon="@drawable/baseline_calendar_today_black_24dp"
+        android:title="@string/nav_calendar" />
+    <item
+        android:id="@+id/nav_create"
+        android:icon="@drawable/baseline_add_black_24dp"
+        android:title="@string/nav_create" />
+    <item
+        android:id="@+id/nav_setting"
+        android:icon="@drawable/baseline_settings_black_24dp"
+        android:title="@string/nav_setting" />
+
+</menu>

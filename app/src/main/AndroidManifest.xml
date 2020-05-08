@@ -9,6 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".CalendarFragment"></activity>
+        <activity android:name=".SettingFragment" />
+        <activity android:name=".CreateFragment" />
+        <activity android:name=".RecentFragment" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
