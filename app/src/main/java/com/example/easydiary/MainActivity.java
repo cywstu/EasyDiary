@@ -2,7 +2,7 @@ package com.example.easydiary;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
+import android.app.Fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         //navListener: change fragment when click on nav items
         bottomNav.setOnNavigationItemSelectedListener(navListener);
         //start with "recent" fragment
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RecentFragment()).commit();
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new RecentFragment()).commit();
 
     }
 
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
                     }
 
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
 
                     return true;
                 }
