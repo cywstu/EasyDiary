@@ -8,12 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-//*****************************************CAUTION*************************************************
-//have used custom calender, named mCalender
-//found from : stackoverflow.com/questions/47450529/how-to-highlight-multiple-dates-in-a-android-calendarview-programmatically
-// --> github.com/SpongeBobSun/mCalendarView?utm_source=android-arsenal.com&utm_medium=referral&utm_campaign=2420
-//***************************************************************************************************
-
 public class CalendarFragment extends Fragment {
 
     @Nullable
