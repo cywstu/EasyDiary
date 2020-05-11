@@ -1,7 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">EasyDiary</string>
     <string name="nav_recent">Recent</string>
     <string name="nav_calendar">Calendar</string>
     <string name="nav_create">New Diary</string>
     <string name="nav_setting">Setting</string>
+
+    //items under setting page
+    <string-array name="list_setting">
+        <item>language</item>
+        <item>back up</item>
+    </string-array>
 </resources>

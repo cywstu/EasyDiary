@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">易記</string>
+    <string name="nav_recent">近況</string>
+    <string name="nav_calendar">日曆</string>
+    <string name="nav_create">新日記</string>
+    <string name="nav_setting">設定</string>
+
+    //items under setting page
+    <string-array name="list_setting">
+        <item>語言</item>
+        <item>備份</item>
+    </string-array>
+</resources>
