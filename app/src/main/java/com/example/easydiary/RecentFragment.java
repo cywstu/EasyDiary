@@ -2,7 +2,7 @@ package com.example.easydiary;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
