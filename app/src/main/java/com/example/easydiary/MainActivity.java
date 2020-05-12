@@ -2,10 +2,14 @@ package com.example.easydiary;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -24,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     //nav bar at the bottom
     private BottomNavigationView bottomNav;
+    final int REQUEST_PERMISSION_CODE = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +49,11 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setOnNavigationItemSelectedListener(navListener);
         //start with "recent" fragment
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RecentFragment()).commit();
+
+        //request permissions
+        if (!checkPermissions()) {
+            requestPermission();
+        }
 
     }
 
@@ -74,19 +84,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
-    /*
-    //for testing buttons
-    public void onClick(View view){
-
-        DiaryDB db = new DiaryDB(this);
-        //db.addDiary(diary);
-        ArrayList resultList = db.getAllDiary();
-
-        Toast.makeText(this, (String)resultList.get(0), Toast.LENGTH_LONG).show();
-
-    }
-    */
-
     @SuppressLint("RestrictedApi")
     public static void disableShiftMode(BottomNavigationView view) {
             BottomNavigationMenuView menuView = (BottomNavigationMenuView) view.getChildAt(0);
@@ -94,6 +91,44 @@ public class MainActivity extends AppCompatActivity {
             menuView.buildMenuView();
     }
 
+    //==========================================================================================================
+    //---permission
+    //==========================================================================================================
+    //checking for permission
+    private boolean checkPermissions() {
+        int write_external_storage_result = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int record_audio_result = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+        int access_fine_location = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+
+        return write_external_storage_result == PackageManager.PERMISSION_GRANTED &&
+                record_audio_result == PackageManager.PERMISSION_GRANTED &&
+                access_fine_location == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.ACCESS_FINE_LOCATION
+        }, REQUEST_PERMISSION_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PERMISSION_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "permission granted", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    Toast.makeText(this, "permission denied", Toast.LENGTH_SHORT).show();
+                }
+        }
+    }
+
+    //==========================================================================================================
+    //--- language
+    //==========================================================================================================
     private void setLocale(String lang){
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);

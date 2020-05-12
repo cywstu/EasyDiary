@@ -7,10 +7,17 @@
     tools:context=".RecentFragment">
 
     <TextView
+        android:id="@+id/lblTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Recent Diaries"
         android:textSize="30dp"
         android:layout_centerInParent="true" />
+    <TextView
+        android:id="@+id/lblDesc"
+        android:text="nothing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
