@@ -30,14 +30,19 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.UUID;
 
-public class CreateFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class CreateFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
 
     private final int REQUEST_IMAGE_CAPTURE = 1001;
     private static int REQUEST_LOCATION = 1;
@@ -53,6 +58,7 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
 
     //map
     private SupportMapFragment mapFragment;
+    private GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
@@ -93,18 +99,19 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
         });
 
         //map
-        //mapFragment = (SupportMapFragment) view.findViewById(R.id.mapFragment);
+        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapFragment);
+        mapFragment.getMapAsync(this);
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
-
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
 
 
         return view;
@@ -162,6 +169,19 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
         lat = mLastLocation.getLatitude();
         lng = mLastLocation.getLongitude();
         //Toast.makeText(getActivity(),"location changed", Toast.LENGTH_SHORT).show();
+        markMap();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+        markMap();
+    }
+
+    private void markMap(){
+        LatLng curLocation = new LatLng(lat, lng);
+        map.addMarker(new MarkerOptions().position(curLocation).title("Your location"));
+        map.moveCamera(CameraUpdateFactory.newLatLng(curLocation));
     }
 
     @Override
