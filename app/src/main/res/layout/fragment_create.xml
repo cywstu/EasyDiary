@@ -66,15 +66,23 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:src="@drawable/baseline_add_a_photo_black_24dp" />
-
-
             </LinearLayout>
+
+            <fragment
+                android:id="@+id/mapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/imageLayout"
+                android:name="com.google.android.gms.maps.SupportMapFragment" />
 
             <Button
                 android:id="@+id/btnSubmit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/imageLayout"
+                android:layout_below="@id/mapFragment"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:text="create new diary!"/>

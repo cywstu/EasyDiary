@@ -1,13 +1,20 @@
 package com.example.easydiary;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -18,16 +25,24 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.SupportMapFragment;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.UUID;
 
-public class CreateFragment extends Fragment {
+public class CreateFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    final int REQUEST_IMAGE_CAPTURE = 1001;
+    private final int REQUEST_IMAGE_CAPTURE = 1001;
+    private static int REQUEST_LOCATION = 1;
 
-    //
+    //images
     private EditText txtTitle;
     private EditText txtDesc;
     private ImageView imgCancel;
@@ -35,6 +50,19 @@ public class CreateFragment extends Fragment {
 
     private boolean hasImage;
     private byte[] image;
+
+    //map
+    private SupportMapFragment mapFragment;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+    private LocationRequest mLocationRequest;
+    private Geocoder mGeocoder;
+
+    private double lat;
+    private double lng;
+
+    public CreateFragment() {
+    }
 
     @Nullable
     @Override
@@ -63,6 +91,21 @@ public class CreateFragment extends Fragment {
                 hasImage = false;
             }
         });
+
+        //map
+        //mapFragment = (SupportMapFragment) view.findViewById(R.id.mapFragment);
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
 
         return view;
     }
@@ -93,9 +136,37 @@ public class CreateFragment extends Fragment {
     }
 
     //==================================================================================================================
-    //--- audio
+    //--- map
     //==================================================================================================================
+    //https://stackoverflow.com/questions/50461881/java-lang-noclassdeffounderrorfailed-resolution-of-lorg-apache-http-protocolve
+    @Override
+    public void onConnected(@Nullable Bundle connectionHint) {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
 
+            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_LOCATION);
+        } else {
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (mLastLocation != null) {
+                lat = mLastLocation.getLatitude();
+                lng = mLastLocation.getLongitude();
+                //Toast.makeText(getActivity(),"got location", Toast.LENGTH_SHORT).show();
+            }
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
+    }
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        lat = mLastLocation.getLatitude();
+        lng = mLastLocation.getLongitude();
+        //Toast.makeText(getActivity(),"location changed", Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { }
+    @Override
+    public void onConnectionSuspended(int i) { }
 
 }
