@@ -21,28 +21,34 @@ public class DiaryDB extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + DiaryTable + " (" +
                 "ID INTEGER NOT NULL," +
-                "Title VARCHAR NULL," +
-                "Content VARCHAR NULL," +
-                "Image BLOB NULL," +
+                "Title VARCHAR NOT NULL," +
+                "Content VARCHAR NOT NULL," +
+                "Date VARCHAR NOT NULL," +
+                "Image BLOB NOT NULL," +
                 "PRIMARY KEY (ID))");
 
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+    public void test(){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + DiaryTable);
+        onCreate(db);
     }
 
-    public void addDiary(String title, String desc, byte[] image){
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) { }
+
+    public void addDiary(String title, String desc, String date, byte[] image){
         SQLiteDatabase database = getWritableDatabase();
-        String sql = "INSERT INTO " + DiaryTable + " VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO " + DiaryTable + " VALUES (?, ?, ?, ?, ?)";
 
         SQLiteStatement statement = database.compileStatement(sql);
         statement.clearBindings();
 
-        if(title != null) { statement.bindString(2, title); }
-        if(desc != null) { statement.bindString(3, desc); }
-        if(image != null) { statement.bindBlob(4, image); }
+        statement.bindString(2, title);
+        statement.bindString(3, desc);
+        statement.bindString(4, date);
+        statement.bindBlob(5, image);
 
         statement.executeInsert();
     }

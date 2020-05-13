@@ -22,6 +22,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -77,6 +78,9 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
 
     private double lat;
     private double lng;
+
+    //button
+    private Button btnSubmit;
 
     public CreateFragment() {
     }
@@ -134,7 +138,9 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-
+        //button
+        btnSubmit = view.findViewById(R.id.btnSubmit);
+        //btnSubmit.setOnClickListener();
 
         return view;
     }
