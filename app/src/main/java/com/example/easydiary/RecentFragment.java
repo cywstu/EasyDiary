@@ -2,6 +2,8 @@ package com.example.easydiary;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -40,7 +42,7 @@ public class RecentFragment extends Fragment {
         DiaryDB db = new DiaryDB(getActivity());
         Cursor cursor = db.getDiaries();
 
-        ArrayList<Diary> Diaries = new ArrayList<>();
+        final ArrayList<Diary> diaries = new ArrayList<>();
         while(cursor.moveToNext()){
             int id = cursor.getInt(1);
             String title = cursor.getString(2);
@@ -48,18 +50,35 @@ public class RecentFragment extends Fragment {
             String date = cursor.getString(4);
             byte[] image = cursor.getBlob(5);
 
-            Diaries.add(new Diary(id,title,desc,date,image));
+            diaries.add(new Diary(id,title,desc,date,image));
         }
 
-        if(Diaries.size() == 0){
+        if(diaries.size() == 0){
             lblMessage.setText("nothing yet!");
             //lblMessage.setText(getResources().getText(R.string.app_name));
         }else {
-            diaryList.setAdapter(new DiaryListAdapter(getActivity(), R.layout.diary_list_layout, Diaries));
+            diaryList.setAdapter(new DiaryListAdapter(getActivity(), R.layout.diary_list_layout, diaries));
             diaryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    
+                    Diary currentDiary = diaries.get(position);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("mode", "update");
+                    bundle.putInt("diaryID", currentDiary.getId());
+                    bundle.putString("diaryTitle", currentDiary.getTitle());
+                    bundle.putString("diaryDesc", currentDiary.getDesc());
+                    bundle.putString("diaryDate", currentDiary.getDate());
+                    bundle.putByteArray("diaryImage", currentDiary.getImage());
+
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                    CreateFragment createFragment = new CreateFragment();
+                    createFragment.setArguments(bundle);
+
+                    fragmentTransaction.replace(R.id.fragment_container, createFragment);
+                    fragmentTransaction.commit();
                 }
             });
         }
