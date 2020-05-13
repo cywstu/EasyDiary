@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+//https://www.youtube.com/watch?v=_4i5Jk5RnFA
 public class RecentFragment extends Fragment {
 
     private ListView diaryList;

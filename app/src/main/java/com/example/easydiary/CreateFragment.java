@@ -52,6 +52,8 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
 
     private final int REQUEST_IMAGE_CAPTURE = 1001;
     private static int REQUEST_LOCATION = 1;
+    private String mode;
+    private int id;
 
     //text
     private EditText txtTitle;
@@ -77,6 +79,8 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
     private LocationRequest mLocationRequest;
     private double lat;
     private double lng;
+    private double oldLat;
+    private double oldLng;
 
     //button
     private Button btnSubmit;
@@ -89,40 +93,78 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create, container, false);
 
-        //text field
         lblDate = view.findViewById(R.id.lblDate);
         txtTitle = view.findViewById(R.id.txtTitle);
         txtDesc = view.findViewById(R.id.txtDesc);
-        year = Calendar.getInstance().get(Calendar.YEAR);
-        month = Calendar.getInstance().get(Calendar.MONTH);
-        date = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-        lblDate.setText(year + "-" + (month+1) + "-" + date);
-        lblDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePicker();
-            }
-        });
-
-        //camera
-        image = null;
         imgCancel = view.findViewById(R.id.imgCancel);
         imgCamera = view.findViewById(R.id.imgCamera);
-        imgCamera.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
-            }
-        });
-        imgCancel.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                image = null;
-                imgCamera.setImageResource(R.drawable.baseline_add_a_photo_black_24dp);
-            }
-        });
-
-        //map
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapFragment);
+        btnSubmit = view.findViewById(R.id.btnSubmit);
+
+        mode = "create";
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            mode = bundle.getString("mode");
+            id = bundle.getInt("diaryID");
+            title = bundle.getString("diaryTitle");
+            desc = bundle.getString("diaryDesc");
+            completeDate = bundle.getString("diaryDate");
+            image = bundle.getByteArray("diaryImage");
+
+            txtTitle.setText(title);
+            txtDesc.setText(desc);
+            lblDate.setText(completeDate);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+            imgCamera.setImageBitmap(bitmap);
+
+            btnSubmit.setText("update");
+        }else{
+            //text
+            year = Calendar.getInstance().get(Calendar.YEAR);
+            month = Calendar.getInstance().get(Calendar.MONTH);
+            date = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+            lblDate.setText(year + "-" + (month+1) + "-" + date);
+            lblDate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDatePicker();
+                }
+            });
+
+            //image
+            imgCamera.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+                }
+            });
+            imgCancel.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    image = null;
+                    imgCamera.setImageResource(R.drawable.baseline_add_a_photo_black_24dp);
+                }
+            });
+
+            //submit
+            btnSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    title = txtTitle.getText().toString();
+                    desc = txtDesc.getText().toString();
+                    completeDate = lblDate.getText().toString();
+                    if(title == null || title.equals("")){
+                        Toast.makeText(getActivity(), "no title", Toast.LENGTH_SHORT).show();
+                    }else if(desc == null || desc.equals("")){
+                        Toast.makeText(getActivity(), "no description", Toast.LENGTH_SHORT).show();
+                    }else if(image == null){
+                        Toast.makeText(getActivity(), "please take a picture", Toast.LENGTH_SHORT).show();
+                    }else{
+                        addDiary();
+                    }
+                }
+            });
+        }
+
         mapFragment.getMapAsync(this);
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
@@ -134,27 +176,6 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        //button
-        btnSubmit = view.findViewById(R.id.btnSubmit);
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                title = txtTitle.getText().toString();
-                desc = txtDesc.getText().toString();
-                completeDate = lblDate.getText().toString();
-                if(title == null || title.equals("")){
-                    Toast.makeText(getActivity(), "no title", Toast.LENGTH_SHORT).show();
-                }else if(desc == null || desc.equals("")){
-                    Toast.makeText(getActivity(), "no description", Toast.LENGTH_SHORT).show();
-                }else if(image == null){
-                    Toast.makeText(getActivity(), "please take a picture", Toast.LENGTH_SHORT).show();
-                }else{
-                    addDiary();
-                }
-
-            }
-        });
 
         return view;
     }
@@ -257,6 +278,12 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
     //==================================================================================================================
     public void addDiary(){
         DiaryDB db = new DiaryDB(getActivity());
-        db.addDiary(title,desc,completeDate,image);
+        if(mode.equals("update")){
+            db.updateDiary(id, title, desc, completeDate, image);
+            Toast.makeText(getActivity(), "successfully updated!", Toast.LENGTH_SHORT).show();
+        }else {
+            db.addDiary(title, desc, completeDate, image);
+            Toast.makeText(getActivity(), "successfully created!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

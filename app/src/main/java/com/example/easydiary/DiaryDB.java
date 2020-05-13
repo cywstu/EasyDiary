@@ -50,6 +50,20 @@ public class DiaryDB extends SQLiteOpenHelper {
         statement.executeInsert();
     }
 
+    public void updateDiary(int id, String title, String desc, String date, byte[] image){
+        SQLiteDatabase database = getWritableDatabase();
+        String sql = "UPDATE " + DiaryTable + " VALUES (?, ?, ?, ?, ?)";
+
+        SQLiteStatement statement = database.compileStatement(sql);
+        statement.clearBindings();
+        statement.bindString(2, title);
+        statement.bindString(3, desc);
+        statement.bindString(4, date);
+        statement.bindBlob(5, image);
+
+        statement.executeUpdateDelete();
+    }
+
     public Cursor getDiaries(){
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
