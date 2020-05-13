@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -21,8 +22,10 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -40,16 +43,24 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
-public class CreateFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
+public class CreateFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback, DatePickerDialog.OnDateSetListener {
 
     private final int REQUEST_IMAGE_CAPTURE = 1001;
     private static int REQUEST_LOCATION = 1;
 
-    //images
+    //text
+    private TextView lblDate;
     private EditText txtTitle;
     private EditText txtDesc;
+    private int date;
+    private int month;
+    private int year;
+
+    //images
     private ImageView imgCancel;
     private ImageView imgCamera;
 
@@ -76,8 +87,19 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
         View view = inflater.inflate(R.layout.fragment_create, container, false);
 
         //text field
+        lblDate = view.findViewById(R.id.lblDate);
         txtTitle = view.findViewById(R.id.txtTitle);
         txtDesc = view.findViewById(R.id.txtDesc);
+        year = Calendar.getInstance().get(Calendar.YEAR);
+        month = Calendar.getInstance().get(Calendar.MONTH);
+        date = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        lblDate.setText(year + "-" + (month+1) + "-" + date);
+        lblDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePicker();
+            }
+        });
 
         //camera
         hasImage = false;
@@ -116,6 +138,28 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
 
         return view;
     }
+
+    //==================================================================================================================
+    //--- date picker
+    //==================================================================================================================
+    //https://www.youtube.com/watch?v=AdTzD96AhE0
+    private void showDatePicker(){
+        DatePickerDialog datePicker = new DatePickerDialog(
+                getActivity(),
+                this,
+                year,
+                month,
+                date);
+        datePicker.show();
+    }
+    @Override
+    public void onDateSet(DatePicker view, int y, int m, int d) {
+        year = y;
+        month = m;
+        date = d;
+        lblDate.setText(year + "-" + (month+1) + "-" + date);
+    }
+
 
     //==================================================================================================================
     //--- camera
@@ -188,5 +232,4 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { }
     @Override
     public void onConnectionSuspended(int i) { }
-
 }

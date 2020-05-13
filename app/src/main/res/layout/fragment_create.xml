@@ -15,11 +15,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TextView
+                android:id="@+id/lblDate"
+                android:background="#FFFFCC"
+                android:text="no date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:textSize="18dp"
+                />
+
             <EditText
                 android:id="@+id/txtTitle"
                 android:background="#FFFFCC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/lblDate"
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
@@ -48,7 +61,7 @@
                 android:id="@+id/imageLayout"
                 android:background="#FFFFCC"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="20dp"
@@ -63,7 +76,7 @@
                 <ImageView
                     android:id="@+id/imgCamera"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="300dp"
                     android:gravity="center"
                     android:src="@drawable/baseline_add_a_photo_black_24dp" />
             </LinearLayout>
