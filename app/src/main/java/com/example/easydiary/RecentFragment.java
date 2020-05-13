@@ -40,15 +40,16 @@ public class RecentFragment extends Fragment {
     public void listDiaries(){
 
         DiaryDB db = new DiaryDB(getActivity());
+        //db.test();
         Cursor cursor = db.getDiaries();
 
         final ArrayList<Diary> diaries = new ArrayList<>();
         while(cursor.moveToNext()){
-            int id = cursor.getInt(1);
-            String title = cursor.getString(2);
-            String desc = cursor.getString(3);
-            String date = cursor.getString(4);
-            byte[] image = cursor.getBlob(5);
+            int id = cursor.getInt(0);
+            String title = cursor.getString(1);
+            String desc = cursor.getString(2);
+            String date = cursor.getString(3);
+            byte[] image = cursor.getBlob(4);
 
             diaries.add(new Diary(id,title,desc,date,image));
         }

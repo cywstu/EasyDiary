@@ -35,9 +35,6 @@ public class DiaryDB extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) { }
-
     public void addDiary(String title, String desc, String date, byte[] image){
         SQLiteDatabase database = getWritableDatabase();
         String sql = "INSERT INTO " + DiaryTable + " VALUES (?, ?, ?, ?, ?)";
@@ -70,4 +67,7 @@ public class DiaryDB extends SQLiteOpenHelper {
 
         return cursor;
     }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) { }
 }

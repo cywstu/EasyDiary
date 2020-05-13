@@ -1,6 +1,8 @@
 package com.example.easydiary;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,20 +33,17 @@ public class DiaryListAdapter extends ArrayAdapter<Diary> {
                 v = layoutInflater.inflate(resource, parent, false);
             }
 
-            ImageView imgDiary = v.findViewById(R.id.imgDiary);
             TextView lblDate = v.findViewById(R.id.lblDate);
             TextView lblTitle = v.findViewById(R.id.lblTitle);
             TextView lblDesc = v.findViewById(R.id.lblDesc);
+            ImageView imgDiary = v.findViewById(R.id.imgDiary);
 
             lblDate.setText(diaries.get(position).getDate());
             lblTitle.setText(diaries.get(position).getTitle());
             lblDesc.setText(diaries.get(position).getDesc());
             byte[] imageBytes = diaries.get(position).getImage();
-            //imgDiary.setImageBitmap();
-
-            //image part
-            //byte[] imageBytes = cursor.getBlob(2);
-            //Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            imgDiary.setImageBitmap(bitmap);
 
         }catch(Exception e){
             e.printStackTrace();
