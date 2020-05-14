@@ -64,11 +64,11 @@ public class DiaryDB extends SQLiteOpenHelper {
         statement.executeUpdateDelete();
     }
 
-    public Cursor getDiaries(){
-        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+    public Cursor getDiary(int id){
+        SQLiteDatabase database = getReadableDatabase();
 
-        String queryString = "SELECT * FROM " + DiaryTable;
-        Cursor cursor = sqLiteDatabase.rawQuery(queryString, null);
+        String sql = "SELECT * FROM " + DiaryTable + " WHERE ID=" + id;
+        Cursor cursor = database.rawQuery(sql, null);
 
         if (cursor.getCount() == 0){
             Log.d("db", "0 result");
@@ -77,7 +77,25 @@ public class DiaryDB extends SQLiteOpenHelper {
         }
 
         //cursor.close();
-        sqLiteDatabase.close();
+        //sqLiteDatabase.close();
+
+        return cursor;
+    }
+
+    public Cursor getDiaries(){
+        SQLiteDatabase database = getReadableDatabase();
+
+        String queryString = "SELECT * FROM " + DiaryTable;
+        Cursor cursor = database.rawQuery(queryString, null);
+
+        if (cursor.getCount() == 0){
+            Log.d("db", "0 result");
+        }else{
+            Log.d("db", "have result");
+        }
+
+        //cursor.close();
+        //database.close();
 
         return cursor;
     }
