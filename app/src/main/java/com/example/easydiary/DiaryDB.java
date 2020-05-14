@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
-import java.util.ArrayList;
-
 public class DiaryDB extends SQLiteOpenHelper {
 
     private final String DiaryTable = "TestDiary";
@@ -22,7 +20,7 @@ public class DiaryDB extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + DiaryTable + " (" +
                 "ID INTEGER NOT NULL," +
                 "Title VARCHAR NOT NULL," +
-                "Content VARCHAR NOT NULL," +
+                "Desc VARCHAR NOT NULL," +
                 "Date VARCHAR NOT NULL," +
                 "Image BLOB NOT NULL," +
                 "PRIMARY KEY (ID))");
@@ -35,7 +33,7 @@ public class DiaryDB extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addDiary(String title, String desc, String date, byte[] image){
+    public int addDiary(String title, String desc, String date, byte[] image){
         SQLiteDatabase database = getWritableDatabase();
         String sql = "INSERT INTO " + DiaryTable + " VALUES (?, ?, ?, ?, ?)";
 
@@ -47,19 +45,21 @@ public class DiaryDB extends SQLiteOpenHelper {
         statement.bindString(4, date);
         statement.bindBlob(5, image);
 
-        statement.executeInsert();
+        int insertedId = (int)statement.executeInsert();
+        return insertedId;
     }
 
     public void updateDiary(int id, String title, String desc, String date, byte[] image){
         SQLiteDatabase database = getWritableDatabase();
-        String sql = "UPDATE " + DiaryTable + " VALUES (?, ?, ?, ?, ?)";
+        String sql = "UPDATE " + DiaryTable + " SET Title = ?, Desc = ?, Date = ?, Image = ? WHERE ID = ?";
 
         SQLiteStatement statement = database.compileStatement(sql);
         statement.clearBindings();
-        statement.bindString(2, title);
-        statement.bindString(3, desc);
-        statement.bindString(4, date);
-        statement.bindBlob(5, image);
+        statement.bindString(1, title);
+        statement.bindString(2, desc);
+        statement.bindString(3, date);
+        statement.bindBlob(4, image);
+        statement.bindLong(5, id);
 
         statement.executeUpdateDelete();
     }

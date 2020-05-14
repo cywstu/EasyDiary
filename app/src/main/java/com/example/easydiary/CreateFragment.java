@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.app.Activity;
@@ -118,6 +120,23 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
             imgCamera.setImageBitmap(bitmap);
 
             btnSubmit.setText("update");
+            btnSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    title = txtTitle.getText().toString();
+                    desc = txtDesc.getText().toString();
+                    completeDate = lblDate.getText().toString();
+                    if(title == null || title.equals("")){
+                        Toast.makeText(getActivity(), "no title", Toast.LENGTH_SHORT).show();
+                    }else if(desc == null || desc.equals("")){
+                        Toast.makeText(getActivity(), "no description", Toast.LENGTH_SHORT).show();
+                    }else if(image == null){
+                        Toast.makeText(getActivity(), "please take a picture", Toast.LENGTH_SHORT).show();
+                    }else{
+                        updateDiary();
+                    }
+                }
+            });
         }else{
             //text
             year = Calendar.getInstance().get(Calendar.YEAR);
@@ -249,11 +268,15 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
     }
     @Override
     public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        lat = mLastLocation.getLatitude();
-        lng = mLastLocation.getLongitude();
-        //Toast.makeText(getActivity(),"location changed", Toast.LENGTH_SHORT).show();
-        markMap();
+        if(mode.equals("update")){
+
+        }else {
+            mLastLocation = location;
+            lat = mLastLocation.getLatitude();
+            lng = mLastLocation.getLongitude();
+            //Toast.makeText(getActivity(),"location changed", Toast.LENGTH_SHORT).show();
+            markMap();
+        }
     }
 
     @Override
@@ -263,9 +286,15 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
     }
 
     private void markMap(){
-        LatLng curLocation = new LatLng(lat, lng);
-        map.addMarker(new MarkerOptions().position(curLocation).title("Your location"));
-        map.moveCamera(CameraUpdateFactory.newLatLng(curLocation));
+        if(mode.equals("update")){
+            LatLng curLocation = new LatLng(lat, lng);
+            map.addMarker(new MarkerOptions().position(curLocation).title("Your location"));
+            map.moveCamera(CameraUpdateFactory.newLatLng(curLocation));
+        }else {
+            LatLng curLocation = new LatLng(lat, lng);
+            map.addMarker(new MarkerOptions().position(curLocation).title("Your location"));
+            map.moveCamera(CameraUpdateFactory.newLatLng(curLocation));
+        }
     }
 
     @Override
@@ -278,12 +307,29 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
     //==================================================================================================================
     public void addDiary(){
         DiaryDB db = new DiaryDB(getActivity());
-        if(mode.equals("update")){
-            db.updateDiary(id, title, desc, completeDate, image);
-            Toast.makeText(getActivity(), "successfully updated!", Toast.LENGTH_SHORT).show();
-        }else {
-            db.addDiary(title, desc, completeDate, image);
-            Toast.makeText(getActivity(), "successfully created!", Toast.LENGTH_SHORT).show();
-        }
+        int insertedId = db.addDiary(title, desc, completeDate, image);
+        Toast.makeText(getActivity(), "successfully created!", Toast.LENGTH_SHORT).show();
+
+        //push data and open this fragment again
+        id = insertedId;
+        Bundle bundle = new Bundle();
+        bundle.putString("mode", "update");
+        bundle.putInt("diaryID", id);
+        bundle.putString("diaryTitle", title);
+        bundle.putString("diaryDesc", desc);
+        bundle.putString("diaryDate", completeDate);
+        bundle.putByteArray("diaryImage", image);
+
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        CreateFragment createFragment = new CreateFragment();
+        createFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.fragment_container, createFragment);
+        fragmentTransaction.commit();
+    }
+    public void updateDiary(){
+        DiaryDB db = new DiaryDB(getActivity());
+        db.updateDiary(id, title, desc, completeDate, image);
+        Toast.makeText(getActivity(), "successfully updated!", Toast.LENGTH_SHORT).show();
     }
 }
