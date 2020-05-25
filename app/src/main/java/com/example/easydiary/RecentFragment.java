@@ -25,6 +25,11 @@ public class RecentFragment extends Fragment {
     private ListView diaryList;
     private TextView lblMessage;
 
+    private String mode;
+    private int year;
+    private int month;
+    private int day;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -32,6 +37,15 @@ public class RecentFragment extends Fragment {
 
         diaryList = view.findViewById(R.id.diaryList);
         lblMessage = view.findViewById(R.id.lblMessage);
+
+        mode = "create";
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            mode = bundle.getString("mode");
+            year = bundle.getInt("diaryYear");
+            month = bundle.getInt("diaryMonth");
+            day = bundle.getInt("diaryDay");
+        }
         listDiaries();
 
         return view;
@@ -42,7 +56,12 @@ public class RecentFragment extends Fragment {
 
         DiaryDB db = new DiaryDB(getActivity());
         //db.test();
-        Cursor cursor = db.getDiaries();
+        Cursor cursor;
+        if(mode.equals("create")) {
+            cursor = db.getDiaries();
+        }else{
+            cursor = db.getDiaries(year, month, day);
+        }
 
         final ArrayList<Diary> diaries = new ArrayList<>();
         while(cursor.moveToNext()){
@@ -57,7 +76,7 @@ public class RecentFragment extends Fragment {
 
         if(diaries.size() == 0){
             lblMessage.setText(getResources().getText(R.string.recent_list_no_diary));
-        }else {
+        }else{
             diaryList.setAdapter(new DiaryListAdapter(getActivity(), R.layout.diary_list_layout, diaries));
             diaryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -85,5 +104,4 @@ public class RecentFragment extends Fragment {
         }
 
     }
-
 }

@@ -111,6 +111,26 @@ public class DiaryDB extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor getDiaries(int year, int month, int day){
+        //fix without 0 problem
+        String strDate = "" + year;
+        if(month < 10){ strDate += "0" + month; } else { strDate += month; }
+        if(day < 10){ strDate += "0" + day; } else {strDate += day; }
+
+        SQLiteDatabase database = getReadableDatabase();
+
+        String queryString = "SELECT * FROM " + DiaryTable + " WHERE DATE = '" + strDate + "'";
+        Cursor cursor = database.rawQuery(queryString, null);
+
+        if (cursor.getCount() == 0){
+            Log.d("db", "0 result");
+        }else{
+            Log.d("db", "have result");
+        }
+
+        return cursor;
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) { }
 }

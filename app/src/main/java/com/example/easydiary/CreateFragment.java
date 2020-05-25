@@ -115,7 +115,16 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
 
             txtTitle.setText(title);
             txtDesc.setText(desc);
-            lblDate.setText(completeDate);
+            year = Integer.parseInt(completeDate.substring(0,4));
+            month = (Integer.parseInt(completeDate.substring(4,6)) - 1);
+            date = Integer.parseInt(completeDate.substring(6,8));
+            lblDate.setText(year+"-"+(month+1)+"-"+date);
+            lblDate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDatePicker();
+                }
+            });
             Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
             imgCamera.setImageBitmap(bitmap);
 
@@ -125,7 +134,6 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
                 public void onClick(View v) {
                     title = txtTitle.getText().toString();
                     desc = txtDesc.getText().toString();
-                    completeDate = lblDate.getText().toString();
                     if(title == null || title.equals("")){
                         Toast.makeText(getActivity(), getResources().getText(R.string.message_no_title), Toast.LENGTH_SHORT).show();
                     }else if(desc == null || desc.equals("")){
@@ -142,6 +150,9 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
             year = Calendar.getInstance().get(Calendar.YEAR);
             month = Calendar.getInstance().get(Calendar.MONTH);
             date = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+            completeDate = "" + year;
+            if(month < 10){ completeDate += "0" + month; }else{ completeDate += month; }
+            if(date < 10){ completeDate += "0" + date; }else{ completeDate += date; }
             lblDate.setText(year + "-" + (month+1) + "-" + date);
             lblDate.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -170,7 +181,6 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
                 public void onClick(View v) {
                     title = txtTitle.getText().toString();
                     desc = txtDesc.getText().toString();
-                    completeDate = lblDate.getText().toString();
                     if(title == null || title.equals("")){
                         Toast.makeText(getActivity(), getResources().getText(R.string.message_no_title), Toast.LENGTH_SHORT).show();
                     }else if(desc == null || desc.equals("")){
@@ -217,6 +227,9 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
         year = y;
         month = m;
         date = d;
+        completeDate = "" + year;
+        if(month < 10){ completeDate += "0" + (month+1); }else{ completeDate += (month+1); }
+        if(date < 10){ completeDate += "0" + date; }else{ completeDate += date; }
         lblDate.setText(year + "-" + (month+1) + "-" + date);
     }
 

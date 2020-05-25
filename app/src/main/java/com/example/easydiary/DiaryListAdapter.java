@@ -38,7 +38,8 @@ public class DiaryListAdapter extends ArrayAdapter<Diary> {
             TextView lblDesc = v.findViewById(R.id.lblDesc);
             ImageView imgDiary = v.findViewById(R.id.imgDiary);
 
-            lblDate.setText(diaries.get(position).getDate());
+            String strDate = diaries.get(position).getDate();
+            lblDate.setText(strDate.substring(0,4) + "-" + strDate.substring(4,6) + "-" + strDate.substring(6,8));
             lblTitle.setText(diaries.get(position).getTitle());
             lblDesc.setText(diaries.get(position).getDesc());
             byte[] imageBytes = diaries.get(position).getImage();
