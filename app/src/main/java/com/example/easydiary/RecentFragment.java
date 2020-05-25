@@ -56,8 +56,7 @@ public class RecentFragment extends Fragment {
         }
 
         if(diaries.size() == 0){
-            lblMessage.setText("nothing yet!");
-            //lblMessage.setText(getResources().getText(R.string.app_name));
+            lblMessage.setText(getResources().getText(R.string.recent_list_no_diary));
         }else {
             diaryList.setAdapter(new DiaryListAdapter(getActivity(), R.layout.diary_list_layout, diaries));
             diaryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

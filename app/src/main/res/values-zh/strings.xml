@@ -11,4 +11,14 @@
         <item>語言</item>
         <item>備份</item>
     </string-array>
+    <string name="diary_title">標題</string>
+    <string name="diary_desc">內容</string>
+    <string name="diary_create">創建日記</string>
+    <string name="diary_update">更新日記</string>
+    <string name="message_create_success">成功創建日記!</string>
+    <string name="message_update_success">日記已更新!</string>
+    <string name="message_no_title">沒有標題!</string>
+    <string name="message_no_desc">請填寫內容!</string>
+    <string name="message_no_image">沒有圖片!</string>
+    <string name="recent_list_no_diary">暫無日記</string>
 </resources>

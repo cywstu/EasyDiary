@@ -27,7 +27,7 @@ public class DiaryDB extends SQLiteOpenHelper {
 
     }
 
-    public void test(){
+    public void reinstall(){
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + DiaryTable);
         onCreate(db);
@@ -60,6 +60,17 @@ public class DiaryDB extends SQLiteOpenHelper {
         statement.bindString(3, date);
         statement.bindBlob(4, image);
         statement.bindLong(5, id);
+
+        statement.executeUpdateDelete();
+    }
+
+    public void removeDiary(int id){
+        SQLiteDatabase database = getWritableDatabase();
+        String sql = "DELETE FROM " + DiaryTable + " WHERE ID = ?;";
+
+        SQLiteStatement statement = database.compileStatement(sql);
+        statement.clearBindings();
+        statement.bindLong(1, id);
 
         statement.executeUpdateDelete();
     }

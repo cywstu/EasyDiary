@@ -11,4 +11,14 @@
         <item>language</item>
         <item>back up</item>
     </string-array>
+    <string name="diary_title">Title</string>
+    <string name="diary_desc">Description</string>
+    <string name="diary_create">Create Diary</string>
+    <string name="diary_update">Update Diary</string>
+    <string name="message_create_success">Diary created!</string>
+    <string name="message_update_success">Diary updated!</string>
+    <string name="message_no_title">Please give a title!</string>
+    <string name="message_no_desc">Please fill in the description!</string>
+    <string name="message_no_image">The diary needs a image!</string>
+    <string name="recent_list_no_diary">No diary yet!</string>
 </resources>

@@ -39,7 +39,7 @@
                 android:textAlignment="center"
                 android:ellipsize="start"
                 android:textSize="30dp"
-                android:hint="Title"
+                android:hint="@string/diary_title"
                 android:textColorHint="#CCCCCC"/>
 
             <EditText
@@ -53,7 +53,7 @@
                 android:layout_marginRight="20dp"
                 android:minLines="5"
                 android:maxLines="20"
-                android:hint="Description"
+                android:hint="@string/diary_title"
                 android:gravity="center_horizontal"
                 android:textColorHint="#CCCCCC" />
 
@@ -101,7 +101,7 @@
                 android:layout_marginRight="30dp"
                 android:layout_marginBottom="30dp"
                 android:gravity="center"
-                android:text="create new diary!"/>
+                android:text="@string/diary_create"/>
 
         </RelativeLayout>
     </ScrollView>

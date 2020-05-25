@@ -119,7 +119,7 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
             Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
             imgCamera.setImageBitmap(bitmap);
 
-            btnSubmit.setText("update");
+            btnSubmit.setText(getResources().getString(R.string.diary_update));
             btnSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -127,11 +127,11 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
                     desc = txtDesc.getText().toString();
                     completeDate = lblDate.getText().toString();
                     if(title == null || title.equals("")){
-                        Toast.makeText(getActivity(), "no title", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getText(R.string.message_no_title), Toast.LENGTH_SHORT).show();
                     }else if(desc == null || desc.equals("")){
-                        Toast.makeText(getActivity(), "no description", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getText(R.string.message_no_desc), Toast.LENGTH_SHORT).show();
                     }else if(image == null){
-                        Toast.makeText(getActivity(), "please take a picture", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getText(R.string.message_no_image), Toast.LENGTH_SHORT).show();
                     }else{
                         updateDiary();
                     }
@@ -172,11 +172,11 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
                     desc = txtDesc.getText().toString();
                     completeDate = lblDate.getText().toString();
                     if(title == null || title.equals("")){
-                        Toast.makeText(getActivity(), "no title", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getText(R.string.message_no_title), Toast.LENGTH_SHORT).show();
                     }else if(desc == null || desc.equals("")){
-                        Toast.makeText(getActivity(), "no description", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getText(R.string.message_no_desc), Toast.LENGTH_SHORT).show();
                     }else if(image == null){
-                        Toast.makeText(getActivity(), "please take a picture", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getText(R.string.message_no_image), Toast.LENGTH_SHORT).show();
                     }else{
                         addDiary();
                     }
@@ -308,7 +308,7 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
     public void addDiary(){
         DiaryDB db = new DiaryDB(getActivity());
         int insertedId = db.addDiary(title, desc, completeDate, image);
-        Toast.makeText(getActivity(), "successfully created!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), getResources().getText(R.string.message_create_success), Toast.LENGTH_SHORT).show();
 
         //push data and open this fragment again
         id = insertedId;
@@ -330,6 +330,6 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
     public void updateDiary(){
         DiaryDB db = new DiaryDB(getActivity());
         db.updateDiary(id, title, desc, completeDate, image);
-        Toast.makeText(getActivity(), "successfully updated!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), getResources().getText(R.string.message_update_success), Toast.LENGTH_SHORT).show();
     }
 }
