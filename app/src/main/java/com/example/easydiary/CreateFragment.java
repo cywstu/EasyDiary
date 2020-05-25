@@ -283,9 +283,7 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
     }
     @Override
     public void onLocationChanged(Location location) {
-        if(mode.equals("update")){
-
-        }else {
+        if(mode.equals("create")){
             mLastLocation = location;
             lat = mLastLocation.getLatitude();
             lng = mLastLocation.getLongitude();
@@ -305,7 +303,11 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
         if(!mode.equals("create")){
             curLocation = new LatLng(oldLat, oldLng);
         }
-        map.addMarker(new MarkerOptions().position(curLocation).title(getResources().getString(R.string.map_marker)));
+        String markerMessage = "Your Location";
+        if(isAdded()){
+            markerMessage = getResources().getString(R.string.map_marker);
+        }
+        map.addMarker(new MarkerOptions().position(curLocation).title(markerMessage));
         map.moveCamera(CameraUpdateFactory.newLatLng(curLocation));
     }
 
