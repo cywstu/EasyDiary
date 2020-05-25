@@ -26,10 +26,10 @@ public class DiaryDBTest {
     @Test
     public void addTest(){
         byte[] testBytes = {123};
-        Diary diary = new Diary(0, "test diary", "test description", "20190204", testBytes);
+        Diary diary = new Diary(0, "test diary", "test description", "20190204", testBytes, 12.5, 30);
         int count = db.getDiaries().getCount();
 
-        int id = db.addDiary(diary.getTitle(), diary.getDesc(), diary.getDate(), diary.getImage());
+        int id = db.addDiary(diary.getTitle(), diary.getDesc(), diary.getDate(), diary.getImage(), diary.getLat(), diary.getLng());
         int newCount = db.getDiaries().getCount();
 
         assertEquals(count + 1, newCount);
@@ -39,11 +39,11 @@ public class DiaryDBTest {
     @Test
     public void updateTest(){
         byte[] testBytes = {123};
-        Diary diary = new Diary(1, "old", "test description", "20190204", testBytes);
-        Diary newDiary = new Diary(1, "updated", "test description", "20190205", testBytes);
+        Diary diary = new Diary(1, "old", "test description", "20190204", testBytes, 12.5, 30);
+        Diary newDiary = new Diary(1, "updated", "test description", "20190205", testBytes, 12.5, 30);
 
         DiaryDB db = new DiaryDB(InstrumentationRegistry.getInstrumentation().getTargetContext());
-        int id = db.addDiary(diary.getTitle(), diary.getDesc(), diary.getDate(), diary.getImage());
+        int id = db.addDiary(diary.getTitle(), diary.getDesc(), diary.getDate(), diary.getImage(), diary.getLat(), diary.getLng());
         db.updateDiary(newDiary.getId(), newDiary.getTitle(), newDiary.getDesc(), newDiary.getDate(), newDiary.getImage());
 
         Cursor cursor = db.getDiary(1);
@@ -59,9 +59,9 @@ public class DiaryDBTest {
     public void removeTest(){
         byte[] testBytes = {123};
         DiaryDB db = new DiaryDB(InstrumentationRegistry.getInstrumentation().getTargetContext());
-        Diary diary = new Diary(2, "old", "test description", "20190204", testBytes);
+        Diary diary = new Diary(2, "old", "test description", "20190204", testBytes, 12.5, 30);
 
-        int id = db.addDiary(diary.getTitle(), diary.getDesc(), diary.getDate(), diary.getImage());
+        int id = db.addDiary(diary.getTitle(), diary.getDesc(), diary.getDate(), diary.getImage(), diary.getLat(), diary.getLng());
         int count = db.getDiaries().getCount();
         db.removeDiary(id);
 
@@ -72,10 +72,10 @@ public class DiaryDBTest {
     @Test
     public void selectFromDateTest(){
         byte[] testBytes = {123};
-        Diary diary = new Diary(3, "2000y01m01d", "test description", "20000101", testBytes);
+        Diary diary = new Diary(3, "2000y01m01d", "test description", "20000101", testBytes, 12.5, 30);
 
         DiaryDB db = new DiaryDB(InstrumentationRegistry.getInstrumentation().getTargetContext());
-        int id = db.addDiary(diary.getTitle(), diary.getDesc(), diary.getDate(), diary.getImage());
+        int id = db.addDiary(diary.getTitle(), diary.getDesc(), diary.getDate(), diary.getImage(), diary.getLat(), diary.getLng());
 
         Cursor cursor = db.getDiaries(2000,1,1);
         String diaryTitle = "";

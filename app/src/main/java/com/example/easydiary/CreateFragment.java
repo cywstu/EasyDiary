@@ -112,6 +112,8 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
             desc = bundle.getString("diaryDesc");
             completeDate = bundle.getString("diaryDate");
             image = bundle.getByteArray("diaryImage");
+            oldLat = bundle.getDouble("diaryLat");
+            oldLng = bundle.getDouble("diaryLng");
 
             txtTitle.setText(title);
             txtDesc.setText(desc);
@@ -299,15 +301,12 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
     }
 
     private void markMap(){
-        if(mode.equals("update")){
-            LatLng curLocation = new LatLng(lat, lng);
-            map.addMarker(new MarkerOptions().position(curLocation).title("Your location"));
-            map.moveCamera(CameraUpdateFactory.newLatLng(curLocation));
-        }else {
-            LatLng curLocation = new LatLng(lat, lng);
-            map.addMarker(new MarkerOptions().position(curLocation).title("Your location"));
-            map.moveCamera(CameraUpdateFactory.newLatLng(curLocation));
+        LatLng curLocation = new LatLng(lat, lng);
+        if(!mode.equals("create")){
+            curLocation = new LatLng(oldLat, oldLng);
         }
+        map.addMarker(new MarkerOptions().position(curLocation).title(getResources().getString(R.string.map_marker)));
+        map.moveCamera(CameraUpdateFactory.newLatLng(curLocation));
     }
 
     @Override
@@ -320,7 +319,7 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
     //==================================================================================================================
     public void addDiary(){
         DiaryDB db = new DiaryDB(getActivity());
-        int insertedId = db.addDiary(title, desc, completeDate, image);
+        int insertedId = db.addDiary(title, desc, completeDate, image, lat, lng);
         Toast.makeText(getActivity(), getResources().getText(R.string.message_create_success), Toast.LENGTH_SHORT).show();
 
         //push data and open this fragment again

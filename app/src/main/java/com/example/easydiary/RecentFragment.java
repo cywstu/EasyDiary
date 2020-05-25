@@ -55,7 +55,6 @@ public class RecentFragment extends Fragment {
     public void listDiaries(){
 
         DiaryDB db = new DiaryDB(getActivity());
-        //db.test();
         Cursor cursor;
         if(mode.equals("create")) {
             cursor = db.getDiaries();
@@ -70,8 +69,10 @@ public class RecentFragment extends Fragment {
             String desc = cursor.getString(2);
             String date = cursor.getString(3);
             byte[] image = cursor.getBlob(4);
+            double lat = cursor.getDouble(5);
+            double lng = cursor.getDouble(6);
 
-            diaries.add(new Diary(id,title,desc,date,image));
+            diaries.add(new Diary(id,title,desc,date,image,lat,lng));
         }
 
         if(diaries.size() == 0){
@@ -90,6 +91,8 @@ public class RecentFragment extends Fragment {
                     bundle.putString("diaryDesc", currentDiary.getDesc());
                     bundle.putString("diaryDate", currentDiary.getDate());
                     bundle.putByteArray("diaryImage", currentDiary.getImage());
+                    bundle.putDouble("diaryLat", currentDiary.getLat());
+                    bundle.putDouble("diaryLng", currentDiary.getLng());
 
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

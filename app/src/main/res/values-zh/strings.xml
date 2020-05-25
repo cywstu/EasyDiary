@@ -21,4 +21,5 @@
     <string name="message_no_desc">請填寫內容!</string>
     <string name="message_no_image">沒有圖片!</string>
     <string name="recent_list_no_diary">暫無日記</string>
+    <string name="map_marker">你的位置</string>
 </resources>

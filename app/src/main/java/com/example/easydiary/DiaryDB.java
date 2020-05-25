@@ -23,6 +23,8 @@ public class DiaryDB extends SQLiteOpenHelper {
                 "Desc VARCHAR NOT NULL," +
                 "Date VARCHAR NOT NULL," +
                 "Image BLOB NOT NULL," +
+                "Lat DOUBLE NOT NULL," +
+                "Lng DOUBLE NOT NULL," +
                 "PRIMARY KEY (ID))");
 
     }
@@ -33,9 +35,9 @@ public class DiaryDB extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public int addDiary(String title, String desc, String date, byte[] image){
+    public int addDiary(String title, String desc, String date, byte[] image, double lat, double lng){
         SQLiteDatabase database = getWritableDatabase();
-        String sql = "INSERT INTO " + DiaryTable + " VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO " + DiaryTable + " VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         SQLiteStatement statement = database.compileStatement(sql);
         statement.clearBindings();
@@ -44,6 +46,8 @@ public class DiaryDB extends SQLiteOpenHelper {
         statement.bindString(3, desc);
         statement.bindString(4, date);
         statement.bindBlob(5, image);
+        statement.bindDouble(6, lat);
+        statement.bindDouble(7, lng);
 
         int insertedId = (int)statement.executeInsert();
         return insertedId;
@@ -66,7 +70,7 @@ public class DiaryDB extends SQLiteOpenHelper {
 
     public void removeDiary(int id){
         SQLiteDatabase database = getWritableDatabase();
-        String sql = "DELETE FROM " + DiaryTable + " WHERE ID = ?;";
+        String sql = "DELETE FROM " + DiaryTable + " WHERE ID = ?";
 
         SQLiteStatement statement = database.compileStatement(sql);
         statement.clearBindings();

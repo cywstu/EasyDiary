@@ -21,4 +21,5 @@
     <string name="message_no_desc">Please fill in the description!</string>
     <string name="message_no_image">The diary needs a image!</string>
     <string name="recent_list_no_diary">No diary yet!</string>
+    <string name="map_marker">Your Location</string>
 </resources>

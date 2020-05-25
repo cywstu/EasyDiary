@@ -73,7 +73,6 @@ public class CalendarFragment extends Fragment {
     public void prepareCalendar(){
         DiaryDB db = new DiaryDB(getActivity());
         Cursor cursor = db.getDiaries();
-        int count = 0;
         while(cursor.moveToNext()){
             String strDate = cursor.getString(3);
             //Toast.makeText(getActivity(), year + " | " + month + " | " + day, Toast.LENGTH_SHORT).show();
