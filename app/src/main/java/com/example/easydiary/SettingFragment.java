@@ -144,7 +144,10 @@ public class SettingFragment extends Fragment {
     private void backup(){
         byte[] bytes = {1,2,3};
         Diary diary = new Diary(0, "ranTitle", "ranDesc", "20120101", bytes, 12.5, 30);
-        dbref.child(""+(maxId+1)).setValue("testestest");
+        DatabaseReference child = dbref.child("202020202020");
+        child.child("title").setValue("testestest");
+        child.child("desc").setValue("desc");
+
         Toast.makeText(getActivity(), "backup completed", Toast.LENGTH_SHORT).show();
     }
 }

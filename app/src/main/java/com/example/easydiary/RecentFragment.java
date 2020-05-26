@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 //https://www.youtube.com/watch?v=_4i5Jk5RnFA
 public class RecentFragment extends Fragment {
@@ -55,9 +56,10 @@ public class RecentFragment extends Fragment {
     public void listDiaries(){
 
         DiaryDB db = new DiaryDB(getActivity());
+        //db.reinstall();
         Cursor cursor;
         if(mode.equals("create")) {
-            cursor = db.getDiaries();
+            cursor = db.getRecentDiaries();
         }else{
             cursor = db.getDiaries(year, month, day);
         }
