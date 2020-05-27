@@ -9,7 +9,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +20,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Locale;
 
@@ -31,12 +36,15 @@ import static android.content.Context.MODE_PRIVATE;
 //language
 //https://www.youtube.com/watch?v=zILw5eV9QBQ
 //firebase
-//https://www.youtube.com/watch?v=r-g2R_COMqo
+//data : https://www.youtube.com/watch?v=r-g2R_COMqo
+//image : https://www.youtube.com/watch?v=lPfQN-Sfnjw
 public class SettingFragment extends Fragment {
 
+    private String DBName = "testDB";
     private ListView listSetting;
 
     private DatabaseReference dbref;
+    private StorageReference storage;
     private long maxId;
 
     @Nullable
@@ -55,12 +63,21 @@ public class SettingFragment extends Fragment {
 
         //firebase stuff
         maxId = 0;
-        dbref = FirebaseDatabase.getInstance().getReference().child("testDB");
+        storage = FirebaseStorage.getInstance().getReference().child(DBName);
+        dbref = FirebaseDatabase.getInstance().getReference().child(DBName);
         dbref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
-                    maxId = dataSnapshot.getChildrenCount();
+                    for(DataSnapshot curDS : dataSnapshot.getChildren()){
+                        Log.d("Firebase Data - ID", curDS.getValue().toString());
+                        String title = (String)curDS.child("Title").getValue();
+                        String desc = (String)curDS.child("Desc").getValue();
+                        String date = (String)curDS.child("Date").getValue();
+                        double lat = Double.parseDouble(curDS.child("Lat").getValue().toString());
+                        double lng = Double.parseDouble(curDS.child("Lng").getValue().toString());
+                        Log.d("Firebase Data - Content",title + " | " + desc + " | " + date + " | " + lat + " | " + lng);
+                    }
                 }
             }
             @Override
@@ -142,12 +159,59 @@ public class SettingFragment extends Fragment {
     //==========================================================================================
 
     private void backup(){
-        byte[] bytes = {1,2,3};
-        Diary diary = new Diary(0, "ranTitle", "ranDesc", "20120101", bytes, 12.5, 30);
-        DatabaseReference child = dbref.child("202020202020");
-        child.child("title").setValue("testestest");
-        child.child("desc").setValue("desc");
+        String createDT = "20201225010203325";
+        byte[] ba = {1,2,3};
+        DatabaseReference child = dbref.child(createDT);
+        child.child("Title").setValue("backup");
+        child.child("Desc").setValue("backup desc");
+        child.child("Date").setValue("20201225");
+        child.child("Lat").setValue(12.5);
+        child.child("Lng").setValue(30);
+        storage.child(createDT).putBytes(ba);
+
+        Log.d("original byte",ba.toString());
+        storage.child(createDT).getBytes(1024*1024*10).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Log.d("returned byte", bytes.toString());
+            }
+        });
+        //backupPush();
+        //backupPull();
+    }
+
+    private void backupPush(){
+        DiaryDB db = new DiaryDB(getActivity());
+        Cursor bCursor = db.getAllBackup();
+        while(bCursor.moveToNext()){
+            String createDT = bCursor.getString(0);
+            String type = bCursor.getString(1);
+            if(type.equals("update") || type.equals("create")){
+                Cursor dCursor = db.getDiary(createDT);
+                dCursor.moveToNext();
+                //prepare diary data
+                String title = dCursor.getString(1);
+                String desc = dCursor.getString(2);
+                String date = dCursor.getString(3);
+                byte[] image = dCursor.getBlob(4);
+                double lat = dCursor.getDouble(5);
+                double lng = dCursor.getDouble(6);
+
+                DatabaseReference child = dbref.child(createDT);
+                child.child("Title").setValue(dCursor.getString(1));
+                child.child("Desc").setValue(dCursor.getString(2));
+                child.child("Date").setValue(dCursor.getString(3));
+                child.child("Image").setValue(dCursor.getBlob(4));
+                child.child("Lat").setValue(dCursor.getDouble(5));
+                child.child("Lng").setValue(dCursor.getDouble(6));
+                child.child("CreateDT").setValue(dCursor.getString(7));
+            }
+        }
 
         Toast.makeText(getActivity(), "backup completed", Toast.LENGTH_SHORT).show();
+    }
+
+    private void backupPull(){
+        dbref.getKey();
     }
 }

@@ -59,12 +59,33 @@ public class DiaryDB extends SQLiteOpenHelper {
         statement.bindDouble(7, lng);
         Calendar c = Calendar.getInstance();
         String createDT = "" + c.get(Calendar.YEAR) + c.get(Calendar.MONTH) + c.get(Calendar.DAY_OF_MONTH) + c.get(Calendar.HOUR_OF_DAY) + c.get(Calendar.MINUTE) + c.get(Calendar.SECOND) + c.get(Calendar.MILLISECOND);
-        statement.bindString(8,createDT);
+        statement.bindString(8, createDT);
 
         int insertedId = (int)statement.executeInsert();
 
         //backup part
         backupLog(createDT, "add");
+        return insertedId;
+    }
+
+    public int addDiary(String title, String desc, String date, byte[] image, double lat, double lng, String createDT){
+        SQLiteDatabase database = getWritableDatabase();
+        String sql = "INSERT INTO " + DiaryTable + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        SQLiteStatement statement = database.compileStatement(sql);
+        statement.clearBindings();
+
+        statement.bindString(2, title);
+        statement.bindString(3, desc);
+        statement.bindString(4, date);
+        statement.bindBlob(5, image);
+        statement.bindDouble(6, lat);
+        statement.bindDouble(7, lng);
+        statement.bindString(8, createDT);
+
+        int insertedId = (int)statement.executeInsert();
+
+        //backup part
         return insertedId;
     }
 
@@ -117,6 +138,14 @@ public class DiaryDB extends SQLiteOpenHelper {
         //cursor.close();
         //sqLiteDatabase.close();
 
+        return cursor;
+    }
+
+    public Cursor getDiary(String createDT){
+        SQLiteDatabase database = getReadableDatabase();
+
+        String sql = "SELECT * FROM " + DiaryTable + " WHERE CreateDT = '" + createDT + "'";
+        Cursor cursor = database.rawQuery(sql, null);
         return cursor;
     }
 

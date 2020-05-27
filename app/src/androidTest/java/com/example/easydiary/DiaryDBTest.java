@@ -86,6 +86,23 @@ public class DiaryDBTest {
         db.removeDiary(id);
     }
 
+    @Test
+    public void selectFromCreateDTTest(){
+        byte[] testBytes = {123};
+        Diary diary = new Diary("createDT", "test description", "20190304", testBytes, 12.5, 30, "20201221181818325");
+
+        DiaryDB db = new DiaryDB(InstrumentationRegistry.getInstrumentation().getTargetContext());
+        int id = db.addDiary(diary.getTitle(), diary.getDesc(), diary.getDate(), diary.getImage(), diary.getLat(), diary.getLng(), diary.getCreateDT());
+
+        Cursor cursor = db.getDiary("20201221181818325");
+        String diaryTitle = "";
+        if(cursor.moveToNext()) {
+            diaryTitle = cursor.getString(1);
+        }
+        assertEquals("createDT", diaryTitle);
+        db.removeDiary(id);
+    }
+
     //============================================================================================
     //BACK UP TEST
     //============================================================================================
@@ -126,4 +143,6 @@ public class DiaryDBTest {
         assertEquals("update", type);
         db.removeDiary(id);
     }
+
+
 }
