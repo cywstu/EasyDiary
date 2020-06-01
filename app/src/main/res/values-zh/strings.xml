@@ -9,7 +9,7 @@
     //items under setting page
     <string-array name="list_setting">
         <item>語言</item>
-        <item>備份</item>
+        <item>同步</item>
     </string-array>
     <string name="diary_title">標題</string>
     <string name="diary_desc">內容</string>
@@ -22,4 +22,7 @@
     <string name="message_no_image">沒有圖片!</string>
     <string name="recent_list_no_diary">暫無日記</string>
     <string name="map_marker">你的位置</string>
+    <string name="message_sync_complete">同步完成!</string>
+    <string name="message_sync_noneed">已同步</string>
+    <string name="message_sync_working">同步進行中...</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.example.easydiary;
 
+import com.google.firebase.storage.FirebaseStorage;
+
 public class Diary {
 
     private int id;
@@ -52,7 +54,10 @@ public class Diary {
         str += "\nLng : " + lng;
         str += "\nCreateDT : " + createDT;
         return str;
+    }
 
+    public void test(FirebaseStorage s){
+        FirebaseStorage storage = s;
     }
 
 }

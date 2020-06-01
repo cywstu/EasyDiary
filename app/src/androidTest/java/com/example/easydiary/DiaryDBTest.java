@@ -1,10 +1,12 @@
 package com.example.easydiary;
 
 import android.database.Cursor;
+import android.util.Log;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,8 +34,10 @@ public class DiaryDBTest {
         int id = db.addDiary(diary.getTitle(), diary.getDesc(), diary.getDate(), diary.getImage(), diary.getLat(), diary.getLng());
         int newCount = db.getDiaries().getCount();
 
-        assertEquals(count + 1, newCount);
+        String createDT = db.getDiaryCreateDT(id);
         db.removeDiary(id);
+        db.removeBackup(createDT);
+        assertEquals(count + 1, newCount);
     }
 
     @Test
@@ -51,8 +55,11 @@ public class DiaryDBTest {
         if(cursor.moveToNext()) {
             newTitle = cursor.getString(1);
         }
-        assertEquals("updated", newTitle);
+
+        String createDT = db.getDiaryCreateDT(id);
         db.removeDiary(id);
+        db.removeBackup(createDT);
+        assertEquals("updated", newTitle);
     }
 
     @Test
@@ -63,9 +70,11 @@ public class DiaryDBTest {
 
         int id = db.addDiary(diary.getTitle(), diary.getDesc(), diary.getDate(), diary.getImage(), diary.getLat(), diary.getLng());
         int count = db.getDiaries().getCount();
+        String createDT = db.getDiaryCreateDT(id);
         db.removeDiary(id);
 
         int newCount = db.getDiaries().getCount();
+        db.removeBackup(createDT);
         assertEquals(count - 1, newCount);
     }
 
@@ -82,8 +91,11 @@ public class DiaryDBTest {
         if(cursor.moveToNext()) {
             diaryTitle = cursor.getString(1);
         }
-        assertEquals("dateDiary", diaryTitle);
+
+        String createDT = db.getDiaryCreateDT(id);
         db.removeDiary(id);
+        db.removeBackup(createDT);
+        assertEquals("dateDiary", diaryTitle);
     }
 
     @Test
@@ -99,8 +111,11 @@ public class DiaryDBTest {
         if(cursor.moveToNext()) {
             diaryTitle = cursor.getString(1);
         }
-        assertEquals("createDT", diaryTitle);
+
+        String createDT = db.getDiaryCreateDT(id);
         db.removeDiary(id);
+        db.removeBackup(createDT);
+        assertEquals("createDT", diaryTitle);
     }
 
     //============================================================================================
@@ -118,8 +133,9 @@ public class DiaryDBTest {
         String createDT = db.getDiaryCreateDT(id);
         boolean backupExists = db.existsInBackup(createDT);
 
-        assertEquals(true, backupExists);
         db.removeDiary(id);
+        db.removeBackup(createDT);
+        assertEquals(true, backupExists);
     }
 
     @Test
@@ -131,17 +147,51 @@ public class DiaryDBTest {
         int id = db.addDiary(diary.getTitle(), diary.getDesc(), diary.getDate(), diary.getImage(), diary.getLat(), diary.getLng());
 
         Diary newDiary = new Diary(5, "updateBackup", "updated", "20190505", testBytes, 12.5, 30);
-        db.updateDiary(id, diary.getTitle(), diary.getDesc(), diary.getDate(), diary.getImage());
+        db.updateDiary(id, newDiary.getTitle(), newDiary.getDesc(), newDiary.getDate(), newDiary.getImage());
 
         String createDT = db.getDiaryCreateDT(id);
+
         Cursor cursor = db.getBackup(createDT);
         String type = "";
         if(cursor.moveToNext()) {
             type = cursor.getString(1);
         }
 
-        assertEquals("update", type);
         db.removeDiary(id);
+        db.removeBackup(createDT);
+        assertEquals("update", type);
+    }
+
+    @Test
+    public void getAllBackupTest(){
+        DiaryDB db = new DiaryDB(InstrumentationRegistry.getInstrumentation().getTargetContext());
+        int oldCount = db.getAllBackup().getCount();
+
+        byte[] testBytes = {123};
+        Diary diary = new Diary(6, "backup", "backup", "20190408", testBytes, 12.5, 30);
+        int id = db.addDiary(diary.getTitle(), diary.getDesc(), diary.getDate(), diary.getImage(), diary.getLat(), diary.getLng());
+
+        int newCount = db.getAllBackup().getCount();
+        String createDT = db.getDiaryCreateDT(id);
+        db.removeDiary(id);
+        db.removeBackup(createDT);
+
+        assertEquals(oldCount+1, newCount);
+    }
+
+    @After
+    public void check(){
+        DiaryDB db = new DiaryDB(InstrumentationRegistry.getInstrumentation().getTargetContext());
+        int count = db.getAllBackup().getCount();
+        Cursor cursor = db.getAllBackup();
+        Log.d("Backup count", "" + count);
+        if(cursor.getCount() > 0) {
+            while(cursor.moveToNext()) {
+                String createDT = cursor.getString(0);
+                String type = cursor.getString(1);
+                Log.d("Backup info", "cdt: " + createDT + " | " + type);
+            }
+        }
     }
 
 

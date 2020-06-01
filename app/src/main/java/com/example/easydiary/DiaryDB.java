@@ -116,10 +116,10 @@ public class DiaryDB extends SQLiteOpenHelper {
         statement.clearBindings();
         statement.bindLong(1, id);
 
+        String createDT = getDiaryCreateDT(id);
         statement.executeUpdateDelete();
 
         //backup part
-        String createDT = getDiaryCreateDT(id);
         backupLog(createDT,"delete");
     }
 
@@ -219,7 +219,7 @@ public class DiaryDB extends SQLiteOpenHelper {
     public boolean existsInBackup(String createDT){
         boolean exists = false;
         SQLiteDatabase database = getReadableDatabase();
-        String queryString = "SELECT * FROM " + BackupTable + " WHERE CreateDT = '" + createDT + "'";
+        String queryString = "SELECT * FROM " + BackupTable + " WHERE CreateDT='" + createDT + "'";
         Cursor cursor = database.rawQuery(queryString, null);
 
         //not exists in backup table
@@ -280,5 +280,26 @@ public class DiaryDB extends SQLiteOpenHelper {
         String queryString = "SELECT * FROM " + BackupTable + " WHERE CreateDT = '" + createDT + "'";
         Cursor cursor = database.rawQuery(queryString, null);
         return cursor;
+    }
+
+    public void removeBackup(String createDT){
+        SQLiteDatabase database = getWritableDatabase();
+        String sql = "DELETE FROM " + BackupTable + " WHERE CreateDT = ?";
+
+        SQLiteStatement statement = database.compileStatement(sql);
+        statement.clearBindings();
+        statement.bindString(1, createDT);
+
+        statement.executeUpdateDelete();
+    }
+
+    public void removeAllBackup(){
+        SQLiteDatabase database = getWritableDatabase();
+        String sql = "DELETE FROM " + BackupTable;
+
+        SQLiteStatement statement = database.compileStatement(sql);
+        statement.executeUpdateDelete();
+
+        Log.d("diary db", "remove all backup data");
     }
 }
