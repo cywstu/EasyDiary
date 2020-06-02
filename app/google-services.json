@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "29996043879",
+    "firebase_url": "https://easydiary-2b6d3.firebaseio.com",
+    "project_id": "easydiary-2b6d3",
+    "storage_bucket": "easydiary-2b6d3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29996043879:android:c1c5f64bdc2fd52cb1cec2",
+        "android_client_info": {
+          "package_name": "com.example.easydiary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "29996043879-rag4n8rojv35qkgvnrjmh0rv33orljin.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.easydiary",
+            "certificate_hash": "bda0cc2e97ff4c4cb416bb22980f7856930f3849"
+          }
+        },
+        {
+          "client_id": "29996043879-1jvtaac2dp7v6h5v1qs7dd68mohvntj8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfiiVhAKHpjsyCyy94H69KSFHCfWoRTMU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "29996043879-1jvtaac2dp7v6h5v1qs7dd68mohvntj8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
