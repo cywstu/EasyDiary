@@ -25,4 +25,5 @@
     <string name="message_sync_complete">Sync complete!</string>
     <string name="message_sync_noneed">No need to sync!</string>
     <string name="message_sync_working">Already working, please wait...</string>
+    <string name="message_sync_start">Start sync...</string>
 </resources>

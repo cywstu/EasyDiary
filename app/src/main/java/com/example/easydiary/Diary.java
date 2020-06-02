@@ -1,6 +1,12 @@
 package com.example.easydiary;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class Diary {
 
@@ -12,6 +18,7 @@ public class Diary {
     private double lat;
     private double lng;
     private String createDT;
+    private DiaryDB db;
 
     public Diary(String t, String d, String date, byte[] i, double lat, double lng, String dt){
         id = -1;
@@ -56,8 +63,22 @@ public class Diary {
         return str;
     }
 
-    public void test(FirebaseStorage s){
-        FirebaseStorage storage = s;
+    public void pullAndSave(StorageReference storage, DiaryDB d){
+        db = d;
+        storage.child(createDT).getBytes(1024 * 1024 * 10).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Log.d("getting image success", "diary title: " + title);
+                image = bytes;
+                addToDB();
+            }
+        });
+    }
+
+    public void addToDB(){
+        db.addDiary(title, desc, date, image, lat, lng, createDT);
     }
 
 }
+
+

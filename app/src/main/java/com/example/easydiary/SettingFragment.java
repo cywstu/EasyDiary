@@ -81,50 +81,12 @@ public class SettingFragment extends Fragment {
                 getResources().getStringArray(R.array.list_setting));
 
         //firebase stuff
+        isPulling = false;
         isPushing = false;
-        isPulling =false;
         pushCount = 0;
         onlineDiaries = new ArrayList<Diary>();
-        dbref = FirebaseDatabase.getInstance().getReference().child(DBName);
         storage = FirebaseStorage.getInstance().getReference().child(DBName);
-        dbref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists() && isPushing == false){
-                    for(DataSnapshot curDS : dataSnapshot.getChildren()){
-                        Log.d("Firebase_Data-ID", "createDT: " + curDS.child("CreateDT").getValue() + " | " + curDS.getValue().toString());
-                        boolean alreadyExist = false;
-                        for(int i = 0; i < onlineDiaries.size(); i++){
-                            if(onlineDiaries.get(i).getCreateDT().equals(cCreateDT)){
-                                alreadyExist = true;
-                                break;
-                            }
-                        }
-                        if(!alreadyExist){
-                            isPulling = true;
-                            cCreateDT = curDS.child("CreateDT").getValue().toString();
-                            cTitle = curDS.child("Title").getValue().toString();
-                            cDesc = curDS.child("Desc").getValue().toString();
-                            cDate = curDS.child("Date").getValue().toString();
-                            cLat = Double.parseDouble(curDS.child("Lat").getValue().toString());
-                            cLng = Double.parseDouble(curDS.child("Lng").getValue().toString());
-                            cImage = null;
-                            storage.child(cCreateDT).getBytes(1024 * 1024 * 10).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                @Override
-                                public void onSuccess(byte[] bytes) {
-                                    cImage = bytes;
-                                    Diary curDiary = new Diary(cTitle, cDesc, cDate, cImage, cLat, cLng, cCreateDT);
-                                    onlineDiaries.add(curDiary);
-                                    isPulling = false;
-                                }
-                            });
-                        }
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });
+        dbref = FirebaseDatabase.getInstance().getReference().child(DBName);
 
         //list click action
         listSetting.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -207,19 +169,20 @@ public class SettingFragment extends Fragment {
 
     private void backupPush(){
         if(isPushing == false) {
+            Toast.makeText(getActivity(), getResources().getString(R.string.message_sync_start), Toast.LENGTH_SHORT).show();
             isPushing = true;
             Log.d("Push Start","true");
             DiaryDB db = new DiaryDB(getActivity());
             Cursor bCursor = db.getAllBackup();
             pushCount = bCursor.getCount() * 7;
             if (pushCount == 0) {
-                Toast.makeText(getActivity(),"no backup data", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(),"no backup data", Toast.LENGTH_SHORT).show();
             }else{
-                Toast.makeText(getActivity(),"count: " + bCursor.getCount(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(),"count: " + bCursor.getCount(), Toast.LENGTH_SHORT).show();
                 while (bCursor.moveToNext()) {
                     String createDT = bCursor.getString(0);
                     String type = bCursor.getString(1);
-                    Toast.makeText(getActivity(), createDT + " | " + type, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), createDT + " | " + type, Toast.LENGTH_SHORT).show();
                     if (type.equals("update") || type.equals("add")) {
                         DatabaseReference childRef = dbref.child(createDT);
                         Cursor dCursor = db.getDiary(createDT);
@@ -241,14 +204,14 @@ public class SettingFragment extends Fragment {
                                 }
                             }
                         });
-                        Toast.makeText(getActivity(), "backup : " + createDT + " | " + dCursor.getString(1), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), "backup : " + createDT + " | " + dCursor.getString(1), Toast.LENGTH_SHORT).show();
                         //db.removeBackup(createDT);
                     }
                 }
             }
 
             //isPushing = false;
-            Toast.makeText(getActivity(), "backup push completed", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "backup push completed", Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(getActivity(),getResources().getString(R.string.message_sync_working), Toast.LENGTH_SHORT).show();
         }
@@ -268,22 +231,33 @@ public class SettingFragment extends Fragment {
 
     private void backupPull(){
         Log.d("Pull start", "true");
-        DiaryDB db = new DiaryDB(getActivity());
-        Log.d("onlinediary size", ""+onlineDiaries.size());
-        if(onlineDiaries.size() == 0){
-            Toast.makeText(getActivity(), getResources().getString(R.string.message_sync_noneed), Toast.LENGTH_SHORT).show();
-        }else {
-            for (int i = 0; i < onlineDiaries.size(); i++) {
-                Diary curOnlineDiary = onlineDiaries.get(i);
-                Cursor localCursor = db.getDiary(curOnlineDiary.getCreateDT());
-                Toast.makeText(getActivity(), "curCreateDT : " + curOnlineDiary.getCreateDT(), Toast.LENGTH_SHORT).show();
-                if (localCursor.getCount() == 0) {
-                    db.addDiary(curOnlineDiary.getTitle(), curOnlineDiary.getDesc(), curOnlineDiary.getDate(), curOnlineDiary.getImage(), curOnlineDiary.getLat(), curOnlineDiary.getLng(), curOnlineDiary.getCreateDT());
-                    Toast.makeText(getActivity(), "added : " + curOnlineDiary.getCreateDT(), Toast.LENGTH_SHORT).show();
+        dbref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("data change", "snap : " + dataSnapshot.exists() + " | " + isPushing);
+                if(dataSnapshot.exists()){
+                    for(DataSnapshot curDS : dataSnapshot.getChildren()){
+                        if(curDS.child("CreateDT").exists()) {
+                            String createDT = curDS.child("CreateDT").getValue().toString();
+                            Log.d("Firebase_Data-ID", "createDT: " + createDT + " | " + curDS.getValue().toString());
+                            DiaryDB db = new DiaryDB(getActivity());
+                            Cursor cursor = db.getDiary(createDT);
+                            if (cursor.getCount() == 0) {
+                                String title = curDS.child("Title").getValue().toString();
+                                String desc = curDS.child("Desc").getValue().toString();
+                                String date = curDS.child("Date").getValue().toString();
+                                double lat = Double.parseDouble(curDS.child("Lat").getValue().toString());
+                                double lng = Double.parseDouble(curDS.child("Lng").getValue().toString());
+                                Diary curDiary = new Diary(title, desc, date, null, lat, lng, createDT);
+                                curDiary.pullAndSave(storage, db);
+                            }
+                        }
+                    }
+                    Toast.makeText(getActivity(), getResources().getString(R.string.message_sync_complete), Toast.LENGTH_SHORT).show();
                 }
-                localCursor.close();
             }
-            Toast.makeText(getActivity(), getResources().getString(R.string.message_sync_complete), Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
     }
 }

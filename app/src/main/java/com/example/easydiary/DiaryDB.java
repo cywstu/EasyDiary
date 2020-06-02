@@ -85,6 +85,7 @@ public class DiaryDB extends SQLiteOpenHelper {
 
         int insertedId = (int)statement.executeInsert();
 
+        Log.d("added diary", "id: " + insertedId + " | " + title + ", " + desc);
         //backup part
         return insertedId;
     }
