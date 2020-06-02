@@ -8,8 +8,8 @@
 
     //items under setting page
     <string-array name="list_setting">
-        <item>language</item>
-        <item>back up</item>
+        <item>Language</item>
+        <item>Sync</item>
     </string-array>
     <string name="diary_title">Title</string>
     <string name="diary_desc">Description</string>
@@ -22,4 +22,8 @@
     <string name="message_no_image">The diary needs a image!</string>
     <string name="recent_list_no_diary">No diary yet!</string>
     <string name="map_marker">Your Location</string>
+    <string name="message_sync_complete">Sync complete!</string>
+    <string name="message_sync_noneed">No need to sync!</string>
+    <string name="message_sync_working">Already working, please wait...</string>
+    <string name="message_sync_start">Start sync...</string>
 </resources>
