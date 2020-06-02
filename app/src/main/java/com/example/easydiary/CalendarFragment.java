@@ -80,7 +80,7 @@ public class CalendarFragment extends Fragment {
             if(!allDates.contains(strDate)) {
                 allDates.add(strDate);
                 int[] intDate = toIntArray(strDate);
-                highlightDate(intDate[0], intDate[1], intDate[2]);
+                highlightDate(intDate[0], intDate[1]+1, intDate[2]);
             }
         }
     }

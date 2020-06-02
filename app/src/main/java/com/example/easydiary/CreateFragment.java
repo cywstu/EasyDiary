@@ -118,7 +118,7 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
             txtTitle.setText(title);
             txtDesc.setText(desc);
             year = Integer.parseInt(completeDate.substring(0,4));
-            month = (Integer.parseInt(completeDate.substring(4,6)) - 1);
+            month = Integer.parseInt(completeDate.substring(4,6));
             date = Integer.parseInt(completeDate.substring(6,8));
             lblDate.setText(year+"-"+(month+1)+"-"+date);
             lblDate.setOnClickListener(new View.OnClickListener() {
@@ -230,7 +230,7 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
         month = m;
         date = d;
         completeDate = "" + year;
-        if(month < 10){ completeDate += "0" + (month+1); }else{ completeDate += (month+1); }
+        if(month < 10){ completeDate += "0" + month; }else{ completeDate += month; }
         if(date < 10){ completeDate += "0" + date; }else{ completeDate += date; }
         lblDate.setText(year + "-" + (month+1) + "-" + date);
     }
@@ -341,6 +341,7 @@ public class CreateFragment extends Fragment implements GoogleApiClient.Connecti
         fragmentTransaction.replace(R.id.fragment_container, createFragment);
         fragmentTransaction.commit();
     }
+
     public void updateDiary(){
         DiaryDB db = new DiaryDB(getActivity());
         db.updateDiary(id, title, desc, completeDate, image);
