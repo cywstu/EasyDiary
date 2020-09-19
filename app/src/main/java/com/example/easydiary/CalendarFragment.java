@@ -45,13 +45,13 @@ public class CalendarFragment extends Fragment {
             public void onDateClick(View view, DateData date){
                 //fix date number < 10 without 0
                 String strTargetDate = ""+date.getYear();
-                if(date.getMonth() < 10){ strTargetDate += "0" + date.getMonth(); } else { strTargetDate += date.getMonth(); }
+                if(date.getMonth() - 1 < 10){ strTargetDate += "0" + (date.getMonth()-1); } else { strTargetDate += (date.getMonth()-1); }
                 if(date.getDay() < 10){ strTargetDate += "0" + date.getDay(); } else {strTargetDate += date.getDay(); }
                 if(allDates.contains(strTargetDate)){
                     Bundle bundle = new Bundle();
                     bundle.putString("mode", "calendar");
                     bundle.putInt("diaryYear", date.getYear());
-                    bundle.putInt("diaryMonth", date.getMonth());
+                    bundle.putInt("diaryMonth", (date.getMonth()-1));
                     bundle.putInt("diaryDay", date.getDay());
 
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
